@@ -10,7 +10,7 @@
         public string About { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? DeletedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
         public ICollection<Follow> Followers { get; set; } = new List<Follow>();
         public ICollection<Post> Posts { get; set; } = new List<Post>();
     }
