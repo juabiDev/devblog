@@ -134,13 +134,16 @@ namespace DevBlog.Services
         {
             try
             {
-                await _resiliencePipeline.ExecuteAsync(async token =>
+                return await _resiliencePipeline.ExecuteAsync(async token =>
                 {
-                    List<User> users = await _db.User.ToListAsync();
-                    return users.Select(u => Mappers.UserMapper.MapToDTO(u)).ToList();
+                    var users = await _db.User.ToListAsync(token);
+                    return users.Select(Mappers.UserMapper.MapToDTO).ToList();
                 });
-
-                return new List<UserDTO>();
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new Exception("Error al obtener los usuarios en la base de datos.");
+                
             }
             catch (SqlException ex)
             {
@@ -156,13 +159,11 @@ namespace DevBlog.Services
         {
             try
             {
-                await _resiliencePipeline.ExecuteAsync(async token =>
+                return await _resiliencePipeline.ExecuteAsync(async token =>
                 {
                     var user = await _db.User.FindAsync(id);
                     return user == null ? null : Mappers.UserMapper.MapToDTO(user);
                 });
-
-                return null;
             }
             catch (SqlException ex)
             {
