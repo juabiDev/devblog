@@ -33,7 +33,25 @@ namespace DevBlog.Controllers
             {
                 return StatusCode(500, "El sistema no esta disponible en estos momentos");
             }
+            catch (Exception excep)
+            {
+                return StatusCode(500, "El sistema no esta disponible en estos momentos");
+            }
         }
+
+        [HttpGet]
+        public async Task<ActionResult<List<UserDTO>>> GetAllUsers()
+        {
+            try
+            {
+                return await _userService.GetAllUsersAsync();
+            }
+            catch (Exception excep)
+            {
+                return StatusCode(500, "El sistema no esta disponible en estos momentos");
+            }
+        }
+
 
     }
 }

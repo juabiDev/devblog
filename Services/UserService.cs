@@ -50,24 +50,33 @@ namespace DevBlog.Services
             }
         }
 
-        public void DeleteUser(Guid id)
+        public Task DeleteUserAsync(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public void EditUser(UserDTO user)
+        public Task EditUserAsync(UserDTO user)
         {
             throw new NotImplementedException();
         }
 
-        public List<UserDTO> GetAllUsers()
+        public async Task<List<UserDTO>> GetAllUsersAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<User> users = await _db.User.ToListAsync();
+                return users.Select(u => Mappers.UserMapper.MapToDTO(u)).ToList();
+            }
+            catch (DbException ex)
+            {
+                throw new Exception("Error en la base de datos.");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ocurrió un error inesperado al obtener los usuarios.");
+            }
         }
 
-        public UserDTO GetUserById(Guid id)
-        {
-            throw new NotImplementedException();
-        }
+
     }
 }
