@@ -2,12 +2,13 @@
 using DevBlog.ServicesContract;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data.Common;
 
 namespace DevBlog.Controllers
 {
     [ApiController]
     [Route("api/users")]
-    public class UserController : Controller
+    public class UserController : Controller 
     {
         private readonly IUserService _userService;
 
@@ -24,9 +25,13 @@ namespace DevBlog.Controllers
                 await _userService.AddUserAsync(user);
                 return Ok();
             }
-            catch (ArgumentException excep)
+            catch (ArgumentNullException excep)
             {
                 return BadRequest(excep.Message);
+            }
+            catch (DbException excep)
+            {
+                return StatusCode(500, "El sistema no esta disponible en estos momentos");
             }
         }
 
