@@ -3,6 +3,8 @@ using DevBlog.Entities;
 using DevBlog.ServicesContract;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Polly;
+using Polly.Retry;
 using System.Data.Common;
 
 namespace DevBlog.Services
@@ -10,36 +12,48 @@ namespace DevBlog.Services
     public class UserService : IUserService
     {
         private readonly BlogDbContext _db;
+        private readonly ResiliencePipeline _resiliencePipeline;
         public UserService(BlogDbContext Db)
         {
             _db = Db;
+
+            // Retry policy for database operations
+            _resiliencePipeline = new ResiliencePipelineBuilder()
+                .AddRetry(new RetryStrategyOptions
+                {
+                    ShouldHandle = new PredicateBuilder()
+                        .Handle<DbUpdateException>()  // Handle DbUpdateException
+                        .Handle<SqlException>(), // Handle SqlException
+                    MaxRetryAttempts = 3, // Retry 3 times
+                    Delay = TimeSpan.FromSeconds(2), // Delay 2 seconds between retries
+                    OnRetry = retryArgs =>
+                    {
+                        return default;
+                    }
+                })
+                .Build();
         }
 
         public async Task AddUserAsync(UserDTO user)
         {
             if (user == null)
             {
-                throw new ArgumentNullException(nameof(user), "El usuario no puede ser nulo.");
+                throw new ArgumentNullException(nameof(user), "User cannot be null.");
             }
 
+            // Execute the operation with the resilience pipeline
             try
             {
-                var newUser = new User
+                await _resiliencePipeline.ExecuteAsync(async token =>
                 {
-                    Name = user.Name,
-                    LastName = user.LastName,
-                    Email = user.Email,
-                    ProfilePhoto = user.ProfilePhoto,
-                    About = user.About,
-                    CreatedAt = DateTime.UtcNow
-                };
-
-                _db.User.Add(newUser);
-                await _db.SaveChangesAsync(); 
+                    User userEntity = Mappers.UserMapper.MapToEntity(user);
+                    await _db.User.AddAsync(userEntity);
+                    await _db.SaveChangesAsync(token);
+                });
             }
             catch (DbUpdateException ex)
             {
-                throw new Exception("Error al guardar el usuario en la base de datos.");
+                throw new Exception("Error al agregar el usuario en la base de datos.");
             }
             catch (SqlException ex)
             {
@@ -55,17 +69,17 @@ namespace DevBlog.Services
         {
             try
             {
-                var user = await _db.User.FindAsync(id);
-
-                if (user == null)
+                await _resiliencePipeline.ExecuteAsync(async token =>
                 {
-                    throw new ArgumentNullException(nameof(user), "El usuario no existe.");
-                }
-
-                user.DeletedAt = DateTime.UtcNow;
-                _db.User.Update(user);
-
-                await _db.SaveChangesAsync();
+                    var user = await _db.User.FindAsync(id);
+                    if (user == null)
+                    {
+                        throw new ArgumentNullException(nameof(user), "El usuario no existe.");
+                    }
+                    user.DeletedAt = DateTime.UtcNow;
+                    _db.User.Update(user);
+                    await _db.SaveChangesAsync(token);
+                });
             }
             catch (DbUpdateException ex)
             {
@@ -81,26 +95,26 @@ namespace DevBlog.Services
             }
         }
 
-        public Task EditUserAsync(UserDTO user)
+        public async Task EditUserAsync(UserDTO user)
         {
             try
             {
-                User userEntity = Mappers.UserMapper.MapToEntity(user);
-                var userFounded = _db.User.Find(userEntity.Id);
-
-                if (userFounded == null)
+                await _resiliencePipeline.ExecuteAsync(async token =>
                 {
-                    throw new ArgumentNullException(nameof(user), "El usuario no existe.");
-                }
-
-                userFounded.Name = user.Name;
-                userFounded.LastName = user.LastName;
-                userFounded.Email = user.Email;
-                userFounded.ProfilePhoto = user.ProfilePhoto;
-                userFounded.About = user.About;
-
-                _db.User.Update(userFounded);
-                return _db.SaveChangesAsync();
+                    User userEntity = Mappers.UserMapper.MapToEntity(user);
+                    var userFounded = await _db.User.FindAsync(userEntity.Id);
+                    if (userFounded == null)
+                    {
+                        throw new ArgumentNullException(nameof(user), "El usuario no existe.");
+                    }
+                    userFounded.Name = user.Name;
+                    userFounded.LastName = user.LastName;
+                    userFounded.Email = user.Email;
+                    userFounded.ProfilePhoto = user.ProfilePhoto;
+                    userFounded.About = user.About;
+                    _db.User.Update(userFounded);
+                    await _db.SaveChangesAsync(token);
+                });
             }
             catch (DbUpdateException ex)
             {
@@ -120,8 +134,13 @@ namespace DevBlog.Services
         {
             try
             {
-                List<User> users = await _db.User.ToListAsync();
-                return users.Select(u => Mappers.UserMapper.MapToDTO(u)).ToList();
+                await _resiliencePipeline.ExecuteAsync(async token =>
+                {
+                    List<User> users = await _db.User.ToListAsync();
+                    return users.Select(u => Mappers.UserMapper.MapToDTO(u)).ToList();
+                });
+
+                return new List<UserDTO>();
             }
             catch (SqlException ex)
             {
@@ -137,11 +156,13 @@ namespace DevBlog.Services
         {
             try
             {
-                var user = await _db.User.FindAsync(id);
+                await _resiliencePipeline.ExecuteAsync(async token =>
+                {
+                    var user = await _db.User.FindAsync(id);
+                    return user == null ? null : Mappers.UserMapper.MapToDTO(user);
+                });
 
-                return user == null 
-                    ? null 
-                    : Mappers.UserMapper.MapToDTO(user);
+                return null;
             }
             catch (SqlException ex)
             {
