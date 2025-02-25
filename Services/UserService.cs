@@ -83,7 +83,37 @@ namespace DevBlog.Services
 
         public Task EditUserAsync(UserDTO user)
         {
-            throw new NotImplementedException();
+            try
+            {
+                User userEntity = Mappers.UserMapper.MapToEntity(user);
+                var userFounded = _db.User.Find(userEntity.Id);
+
+                if (userFounded == null)
+                {
+                    throw new ArgumentNullException(nameof(user), "El usuario no existe.");
+                }
+
+                userFounded.Name = user.Name;
+                userFounded.LastName = user.LastName;
+                userFounded.Email = user.Email;
+                userFounded.ProfilePhoto = user.ProfilePhoto;
+                userFounded.About = user.About;
+
+                _db.User.Update(userFounded);
+                return _db.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new Exception("Error al editar el usuario en la base de datos.");
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception("Error al conectar la base de datos");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ocurrió un error inesperado al editar el usuario.");
+            }
         }
 
         public async Task<List<UserDTO>> GetAllUsersAsync()

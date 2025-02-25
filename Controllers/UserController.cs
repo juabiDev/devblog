@@ -87,5 +87,23 @@ namespace DevBlog.Controllers
                 return StatusCode(500, "El sistema no esta disponible en estos momentos");
             }
         }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> EditUser(Guid id, [FromBody] UserDTO user)
+        {
+            try
+            {
+                await _userService.EditUserAsync(user);
+                return Ok();
+            }
+            catch (ArgumentNullException excep)
+            {
+                return BadRequest(excep.Message);
+            }
+            catch (Exception excep)
+            {
+                return StatusCode(500, "El sistema no esta disponible en estos momentos");
+            }
+        }
     }
 }
