@@ -8,6 +8,6 @@ namespace DevBlog.ServicesContract
         public UserDTO GetUserById(Guid id);
         public void DeleteUser(Guid id);
         public void EditUser(UserDTO user);
-        public void AddUser(UserDTO id);
+        Task AddUserAsync(UserDTO user);
     }
 }
