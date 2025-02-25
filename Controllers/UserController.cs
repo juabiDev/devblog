@@ -69,5 +69,23 @@ namespace DevBlog.Controllers
                 return StatusCode(500, "El sistema no esta disponible en estos momentos");
             }
         }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteUser(Guid id)
+        {
+            try
+            {
+                await _userService.DeleteUserAsync(id);
+                return Ok();
+            }
+            catch(ArgumentNullException excep)
+            {
+                return BadRequest(excep.Message);
+            }
+            catch (Exception excep)
+            {
+                return StatusCode(500, "El sistema no esta disponible en estos momentos");
+            }
+        }
     }
 }

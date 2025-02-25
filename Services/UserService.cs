@@ -51,9 +51,34 @@ namespace DevBlog.Services
             }
         }
 
-        public Task DeleteUserAsync(Guid id)
+        public async Task DeleteUserAsync(Guid id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var user = await _db.User.FindAsync(id);
+
+                if (user == null)
+                {
+                    throw new ArgumentNullException(nameof(user), "El usuario no existe.");
+                }
+
+                user.DeletedAt = DateTime.UtcNow;
+                _db.User.Update(user);
+
+                await _db.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new Exception("Error al eliminar el usuario en la base de datos.");
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception("Error al conectar la base de datos");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ocurrió un error inesperado al eliminar el usuario.");
+            }
         }
 
         public Task EditUserAsync(UserDTO user)
