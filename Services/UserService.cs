@@ -2,6 +2,7 @@
 using DevBlog.Entities;
 using DevBlog.ServicesContract;
 using Microsoft.EntityFrameworkCore;
+using System.Data.Common;
 
 namespace DevBlog.Services
 {
@@ -33,17 +34,19 @@ namespace DevBlog.Services
                 };
 
                 _db.User.Add(newUser);
-                await _db.SaveChangesAsync(); // Uso de la versión asíncrona
+                await _db.SaveChangesAsync(); 
             }
             catch (DbUpdateException ex)
             {
-                Console.WriteLine($"DbUpdateException: {ex.Message}");
-                throw new Exception("Error al guardar el usuario en la base de datos.", ex);
+                throw new Exception("Error al guardar el usuario en la base de datos.");
+            }
+            catch(DbException ex)
+            {
+                throw new Exception("Error en la base de datos.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception: {ex.Message}");
-                throw new Exception("Ocurrió un error inesperado al agregar el usuario.", ex);
+                throw new Exception("Ocurrió un error inesperado al agregar el usuario.");
             }
         }
 
