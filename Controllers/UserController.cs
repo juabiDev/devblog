@@ -52,6 +52,22 @@ namespace DevBlog.Controllers
             }
         }
 
-
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UserDTO>> GetUserById(Guid id)
+        {
+            try
+            {
+                var user = await _userService.GetUserByIdAsync(id);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                return user;
+            }
+            catch (Exception excep)
+            {
+                return StatusCode(500, "El sistema no esta disponible en estos momentos");
+            }
+        }
     }
 }

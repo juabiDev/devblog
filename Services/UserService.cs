@@ -77,6 +77,24 @@ namespace DevBlog.Services
             }
         }
 
+        public async Task<UserDTO?> GetUserByIdAsync(Guid id)
+        {
+            try
+            {
+                var user = await _db.User.FindAsync(id);
 
+                return user == null 
+                    ? null 
+                    : Mappers.UserMapper.MapToDTO(user);
+            }
+            catch (DbException ex)
+            {
+                throw new Exception("Error en la base de datos.");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ocurrió un error inesperado al obtener el usuario.");
+            }
+        }
     }
 }
