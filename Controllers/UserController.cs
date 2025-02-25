@@ -17,11 +17,11 @@ namespace DevBlog.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create([FromBody] UserDTO user)
+        public async Task<ActionResult> Create([FromBody] UserDTO user)
         {
             try
             {
-                _userService.AddUser(user);
+                await _userService.AddUserAsync(user);
                 return Ok();
             }
             catch (ArgumentException excep)
