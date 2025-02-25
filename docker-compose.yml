@@ -8,7 +8,7 @@ services:
     depends_on:
       - db
     environment:
-      - ConnectionStrings__DefaultConnection=Server=db,1433;Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};
+      - ConnectionStrings__DefaultConnection=Server=db;Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};
     ports:
       - "8080:8080"
       - "8081:8081"
@@ -20,7 +20,7 @@ services:
       ACCEPT_EULA: "Y"
       MSSQL_PID: "Express"
     ports:
-      - "${DB_PORT}:1433"
+      - "1433:1433"
     volumes:
       - sqlserver_data:/var/opt/mssql
 
