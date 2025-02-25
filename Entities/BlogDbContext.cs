@@ -21,6 +21,9 @@ namespace DevBlog.Entities
         {
             base.OnModelCreating(modelBuilder);
 
+            // Soft delete filter
+            modelBuilder.Entity<User>().HasQueryFilter(u => u.DeletedAt == null);
+
             modelBuilder.Entity<User>()
                 .HasIndex(t => t.Email).IsUnique();
 
