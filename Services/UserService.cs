@@ -1,6 +1,7 @@
 ﻿using DevBlog.DTOs;
 using DevBlog.Entities;
 using DevBlog.ServicesContract;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
 
@@ -30,7 +31,7 @@ namespace DevBlog.Services
                     Email = user.Email,
                     ProfilePhoto = user.ProfilePhoto,
                     About = user.About,
-                    CreatedAt = DateTime.Now
+                    CreatedAt = DateTime.UtcNow
                 };
 
                 _db.User.Add(newUser);
@@ -40,9 +41,9 @@ namespace DevBlog.Services
             {
                 throw new Exception("Error al guardar el usuario en la base de datos.");
             }
-            catch(DbException ex)
+            catch (SqlException ex)
             {
-                throw new Exception("Error en la base de datos.");
+                throw new Exception("Error al conectar la base de datos");
             }
             catch (Exception ex)
             {
@@ -67,9 +68,9 @@ namespace DevBlog.Services
                 List<User> users = await _db.User.ToListAsync();
                 return users.Select(u => Mappers.UserMapper.MapToDTO(u)).ToList();
             }
-            catch (DbException ex)
+            catch (SqlException ex)
             {
-                throw new Exception("Error en la base de datos.");
+                throw new Exception("Error al conectar la base de datos");
             }
             catch (Exception ex)
             {
@@ -87,9 +88,9 @@ namespace DevBlog.Services
                     ? null 
                     : Mappers.UserMapper.MapToDTO(user);
             }
-            catch (DbException ex)
+            catch (SqlException ex)
             {
-                throw new Exception("Error en la base de datos.");
+                throw new Exception("Error al conectar la base de datos");
             }
             catch (Exception ex)
             {
