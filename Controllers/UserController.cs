@@ -8,7 +8,7 @@ namespace DevBlog.Controllers
 {
     [ApiController]
     [Route("api/users")]
-    public class UserController : Controller 
+    public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
 
