@@ -102,11 +102,13 @@ namespace DevBlog.Services
                 await _resiliencePipeline.ExecuteAsync(async token =>
                 {
                     User userEntity = Mappers.UserMapper.MapToEntity(user);
-                    var userFounded = await _db.User.FindAsync(userEntity.Id);
+                    var userFounded = await _db.User.Where(e => e.Email == userEntity.Email).FirstOrDefaultAsync(token);
+                    
                     if (userFounded == null)
                     {
                         throw new ArgumentNullException(nameof(user), "El usuario no existe.");
                     }
+
                     userFounded.Name = user.Name;
                     userFounded.LastName = user.LastName;
                     userFounded.Email = user.Email;
@@ -126,6 +128,7 @@ namespace DevBlog.Services
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 throw new Exception("Ocurrió un error inesperado al editar el usuario.");
             }
         }
