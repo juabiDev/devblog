@@ -46,8 +46,8 @@ namespace DevBlog.Services
             {
                 await _resiliencePipeline.ExecuteAsync(async token =>
                 {
-                    User userEntity = Mappers.UserMapper.ToEntity(user);
-                    await _db.User.AddAsync(userEntity, token);
+                    User userEntity = Mappers.UserMapper.MapToEntity(user);
+                    await _db.User.AddAsync(userEntity);
                     await _db.SaveChangesAsync(token);
                 });
             }
@@ -101,7 +101,7 @@ namespace DevBlog.Services
             {
                 await _resiliencePipeline.ExecuteAsync(async token =>
                 {
-                    User userEntity = Mappers.UserMapper.ToEntity(user);
+                    User userEntity = Mappers.UserMapper.MapToEntity(user);
                     var userFounded = await _db.User.Where(e => e.Email == userEntity.Email).FirstOrDefaultAsync(token);
                     
                     if (userFounded == null)
@@ -140,7 +140,7 @@ namespace DevBlog.Services
                 return await _resiliencePipeline.ExecuteAsync(async token =>
                 {
                     var users = await _db.User.ToListAsync(token);
-                    return users.Select(Mappers.UserMapper.ToDTO).ToList();
+                    return users.Select(Mappers.UserMapper.MapToDTO).ToList();
                 });
             }
             catch (DbUpdateException ex)
@@ -165,7 +165,7 @@ namespace DevBlog.Services
                 return await _resiliencePipeline.ExecuteAsync(async token =>
                 {
                     var user = await _db.User.FindAsync(id);
-                    return user == null ? null : Mappers.UserMapper.ToDTO(user);
+                    return user == null ? null : Mappers.UserMapper.MapToDTO(user);
                 });
             }
             catch (SqlException ex)
