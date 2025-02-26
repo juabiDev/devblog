@@ -60,7 +60,7 @@ namespace DevBlog.Entities
                 .UsingEntity(j => j.ToTable("PostTag"));
 
              modelBuilder.Entity<Post>()
-                .HasOne(p => p.Category)
+                .HasOne(p => p.category)
                 .WithMany(c => c.Posts)
                 .HasForeignKey(p => p.CategoryId)
                 .OnDelete(DeleteBehavior.Cascade);
@@ -72,7 +72,7 @@ namespace DevBlog.Entities
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Post>()
-                .HasOne(p => p.Category)
+                .HasOne(p => p.category)
                 .WithMany(c => c.Posts)
                 .HasForeignKey(p => p.CategoryId)
                 .OnDelete(DeleteBehavior.Cascade);
