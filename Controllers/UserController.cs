@@ -2,6 +2,7 @@
 using DevBlog.ServicesContract;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Data.Common;
 
 namespace DevBlog.Controllers
@@ -22,8 +23,16 @@ namespace DevBlog.Controllers
         {
             try
             {
+                if(!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
                 await _userService.AddUserAsync(user);
-                return Ok();
+                return Ok(new
+                {
+                    message = "User created successfully"
+                });
             }
             catch (ArgumentNullException excep)
             {
@@ -58,10 +67,15 @@ namespace DevBlog.Controllers
             try
             {
                 var user = await _userService.GetUserByIdAsync(id);
+
                 if (user == null)
                 {
-                    return NotFound();
+                    return NotFound(new
+                    {
+                        message = "User not found"
+                    });
                 }
+                
                 return user;
             }
             catch (Exception excep)
@@ -76,7 +90,10 @@ namespace DevBlog.Controllers
             try
             {
                 await _userService.DeleteUserAsync(id);
-                return Ok();
+                return Ok(new
+                {
+                    message = "User deleted successfully"
+                });
             }
             catch(ArgumentNullException excep)
             {
@@ -93,8 +110,17 @@ namespace DevBlog.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
                 await _userService.EditUserAsync(user);
-                return Ok();
+
+                return Ok(new
+                {
+                    message = "User updated successfully"
+                });
             }
             catch (ArgumentNullException excep)
             {

@@ -12,8 +12,8 @@ namespace DevBlog.Mappers
                 Name = user.Name,
                 LastName = user.LastName,
                 Email = user.Email,
-                ProfilePhoto = user.ProfilePhoto,
-                About = user.About
+                ProfilePhoto = user.ProfilePhoto ?? string.Empty, 
+                About = user.About ?? string.Empty 
             };
         }
 
@@ -24,8 +24,8 @@ namespace DevBlog.Mappers
                 Name = user.Name,
                 LastName = user.LastName,
                 Email = user.Email,
-                ProfilePhoto = user.ProfilePhoto,
-                About = user.About
+                ProfilePhoto = user.ProfilePhoto ?? string.Empty,
+                About = user.About ?? string.Empty
             };
         }
     }
