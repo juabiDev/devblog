@@ -5,7 +5,7 @@ namespace DevBlog.Mappers
 {
     public static class UserMapper
     {
-        public static User MapToEntity(UserDTO user)
+        public static User ToEntity(UserDTO user)
         {
             return new User
             {
@@ -17,7 +17,7 @@ namespace DevBlog.Mappers
             };
         }
 
-        public static UserDTO MapToDTO(User user)
+        public static UserDTO ToDTO(User user)
         {
             return new UserDTO
             {
