@@ -13,7 +13,7 @@
         public Guid AuthorId { get; set; }
         public User Author { get; set; }
         public Guid CategoryId { get; set; }
-        public Category category { get; set; }
+        public Category Category { get; set; }
         public ICollection<Tag> Tags { get; set; } = new List<Tag>();
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
     }
