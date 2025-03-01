@@ -34,6 +34,14 @@ builder.Services.AddScoped<IPostService, PostService>();
 
 var app = builder.Build();
 
+app.UseCors(builder => builder
+    .WithOrigins(new string[] {
+        Environment.GetEnvironmentVariable("CLIENT_URL")
+    })
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+);
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
