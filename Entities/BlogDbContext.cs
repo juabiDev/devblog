@@ -17,12 +17,34 @@ namespace DevBlog.Entities
         {
         }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+
+            optionsBuilder.UseSqlServer(
+                opt => {
+                    opt.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                }
+             );
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             // Soft delete filter
             modelBuilder.Entity<User>().HasQueryFilter(u => u.DeletedAt == null);
+            modelBuilder.Entity<Post>().HasQueryFilter(p => p.DeletedAt == null);
+            modelBuilder.Entity<Comment>().HasQueryFilter(c => c.DeletedAt == null);
+
+            modelBuilder.Entity<Comment>()
+                .HasQueryFilter(c => c.Author == null || c.Author.DeletedAt == null);
+
+            modelBuilder.Entity<Post>()
+                .HasQueryFilter(p => p.Author == null || p.Author.DeletedAt == null);
+
+            modelBuilder.Entity<Follow>()
+                .HasQueryFilter(f => f.Follower == null || f.Follower.DeletedAt == null);
 
             modelBuilder.Entity<User>()
                 .HasIndex(t => t.Email).IsUnique();
