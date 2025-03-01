@@ -39,6 +39,30 @@ namespace DevBlog.Controllers
             }
         }
 
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(Guid id)
+        {
+            try
+            {
+                await _postService.DeletePost(id);
+                return Ok(
+                    new { message = "Post was deleted successfully" }
+                );
+            }
+            catch (ArgumentException excep)
+            {
+                return BadRequest(excep.Message);
+            }
+            catch (DbException excep)
+            {
+                return StatusCode(500, "El sistema no esta disponible en estos momentos");
+            }
+            catch (Exception excep)
+            {
+                return StatusCode(500, "El sistema no esta disponible en estos momentos");
+            }
+        }
+
         [HttpGet]
         public async Task<ActionResult<List<PostDTO>>> GetAllPosts()
         {
