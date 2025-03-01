@@ -6,9 +6,9 @@ namespace DevBlog.ServicesContract
     public interface IPostService
     {
         Task CreatePost(CreatePostRequest post);
-        Task<Post> UpdatePost(Post post);
+        Task<PostDTO> UpdatePost(Post post);
         Task DeletePost(Guid id);
-        Task<Post> GetPostById(Guid id);
+        Task<PostDTO> GetPostById(Guid id);
         Task<List<PostDTO>> GetAllPosts();
         Task<List<PostDTO>> GetPostsByCategory(Guid categoryId);
         Task<List<PostDTO>> GetPostsByTag(Guid tagId);

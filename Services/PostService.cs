@@ -151,7 +151,7 @@ namespace DevBlog.Services
             }
         }
 
-        public async Task<Post> GetPostById(Guid id)
+        public async Task<PostDTO> GetPostById(Guid id)
         {
             try
             {
@@ -169,7 +169,7 @@ namespace DevBlog.Services
                         throw new ArgumentException("El post no existe.");
                     }
 
-                    return post;
+                    return PostMapper.ToDTO(post);
                 });
             }
             catch (ArgumentException ex)
@@ -265,7 +265,7 @@ namespace DevBlog.Services
             }
         }
 
-        public async Task<Post> UpdatePost(Post post)
+        public async Task<PostDTO> UpdatePost(Post post)
         {
             throw new NotImplementedException();
         }
