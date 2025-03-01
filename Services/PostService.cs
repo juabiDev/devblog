@@ -98,7 +98,7 @@ namespace DevBlog.Services
 
         }
 
-        public Task<Post> DeletePost(Guid id)
+        public Task DeletePost(Guid id)
         {
             throw new NotImplementedException();
         }
@@ -126,16 +126,42 @@ namespace DevBlog.Services
             }
         }
 
-        public Task<Post> GetPostById(Guid id)
+        public async Task<Post> GetPostById(Guid id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _resiliencePipeline.ExecuteAsync(async token =>
+                {
+                    var post = await _db.Post
+                        .Include(p => p.Author)
+                        .Include(p => p.Category)
+                        .Include(p => p.Tags)
+                        .Include(p => p.Comments)
+                        .FirstOrDefaultAsync(p => p.Id == id, token);
+
+                    if (post == null)
+                    {
+                        throw new ArgumentException("El post no existe.");
+                    }
+
+                    return post;
+                });
+            }
+            catch (ArgumentException ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ocurrió un error inesperado al obtener el post.");
+            }
         }
 
-        public Task<List<Post>> GetPostsByAuthor(Guid authorId)
+        public async Task<List<PostDTO>> GetPostsByAuthor(Guid authorId)
         {
             throw new NotImplementedException();
-        }
 
+        }
         public Task<List<Post>> GetPostsByCategory(Guid categoryId)
         {
             throw new NotImplementedException();
