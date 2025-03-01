@@ -34,7 +34,7 @@ namespace DevBlog.Controllers
                     message = "User created successfully"
                 });
             }
-            catch (ArgumentNullException excep)
+            catch (ArgumentException excep)
             {
                 return BadRequest(excep.Message);
             }
@@ -95,7 +95,7 @@ namespace DevBlog.Controllers
                     message = "User deleted successfully"
                 });
             }
-            catch(ArgumentNullException excep)
+            catch(ArgumentException excep)
             {
                 return BadRequest(excep.Message);
             }
@@ -115,14 +115,14 @@ namespace DevBlog.Controllers
                     return BadRequest(ModelState);
                 }
 
-                await _userService.EditUserAsync(user);
+                await _userService.EditUserAsync(id, user);
 
                 return Ok(new
                 {
                     message = "User updated successfully"
                 });
             }
-            catch (ArgumentNullException excep)
+            catch (ArgumentException excep)
             {
                 return BadRequest(excep.Message);
             }
