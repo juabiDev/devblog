@@ -159,6 +159,11 @@ namespace DevBlog.Services
 
         public async Task<List<PostDTO>> GetPostsByAuthor(Guid authorId)
         {
+            if (!await _db.User.AnyAsync(u => u.Id == authorId))
+            {
+                throw new ArgumentException("La categoría no existe.");
+            }
+
             try
             {
                 return await _resiliencePipeline.ExecuteAsync(async token =>
@@ -179,11 +184,33 @@ namespace DevBlog.Services
                 throw new Exception("Ocurrió un error inesperado al obtener los posts.");
             }
         }
-        public Task<List<Post>> GetPostsByCategory(Guid categoryId)
+        public async Task<List<Post>> GetPostsByCategory(Guid categoryId)
         {
-            throw new NotImplementedException();
-        }
 
+            if (!await _db.Category.AnyAsync(c => c.Id == categoryId))
+            {
+                throw new ArgumentException("La categoría no existe.");
+            }
+
+            try
+            {
+                return await _resiliencePipeline.ExecuteAsync(async token =>
+                {
+                    var posts = await _db.Post
+                        .Include(p => p.Author)
+                        .Include(p => p.Category)
+                        .Include(p => p.Tags)
+                        .Include(p => p.Comments)
+                        .Where(p => p.CategoryId == categoryId)
+                        .ToListAsync(token);
+                    return posts;
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ocurrió un error inesperado al obtener los posts.");
+            }
+        }
         public Task<List<Post>> GetPostsByTag(Guid tagId)
         {
             throw new NotImplementedException();
