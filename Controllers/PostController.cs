@@ -84,6 +84,26 @@ namespace DevBlog.Controllers
             }
         }
 
+        [HttpGet("user/{authorId}")]
+        public async Task<ActionResult<List<PostDTO>>> GetPostsByAuthor(Guid authorId)
+        {
+            try
+            {
+                return await _postService.GetPostsByAuthor(authorId);
+            } catch(ArgumentException excep)
+            {
+                return BadRequest(excep.Message);
+            }
+            catch (DbException excep)
+            {
+                return StatusCode(500, "El sistema no esta disponible en estos momentos");
+            }
+            catch (Exception excep)
+            {
+                return StatusCode(500, "El sistema no esta disponible en estos momentos");
+            }
+        }
+
         [HttpGet]
         public async Task<ActionResult<List<PostDTO>>> GetAllPosts()
         {
