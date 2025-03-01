@@ -186,22 +186,24 @@ namespace DevBlog.Services
         {
             if (!await _db.User.AnyAsync(u => u.Id == authorId))
             {
-                throw new ArgumentException("La categoría no existe.");
+                throw new ArgumentException("El autor no existe.");
             }
 
             try
             {
                 return await _resiliencePipeline.ExecuteAsync(async token =>
                 {
-                    var posts = await _db.Post
-                        .Include(p => p.Author)
-                        .Include(p => p.Category)
+                    List<PostDTO> posts = await _db.User
+                        .Where(u => u.Id == authorId)
+                        .SelectMany(u => u.Posts)
                         .Include(p => p.Tags)
                         .Include(p => p.Comments)
-                        .Where(p => p.AuthorId == authorId)
-                        .ToListAsync(token);
+                        .Include(p => p.Category)
+                        .Include(p => p.Author)
+                        .Select(p => PostMapper.ToDTO(p))
+                        .ToListAsync(token); 
 
-                    return posts.Select(p => PostMapper.ToDTO(p)).ToList();
+                    return posts;
                 });
             }
             catch (Exception ex)
