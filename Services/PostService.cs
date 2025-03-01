@@ -98,9 +98,34 @@ namespace DevBlog.Services
 
         }
 
-        public Task DeletePost(Guid id)
+        public async Task DeletePost(Guid id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _resiliencePipeline.ExecuteAsync(async token =>
+                {
+                    var post = await _db.Post
+                        .Where(p => p.Id == id)
+                        .FirstOrDefaultAsync(token);
+                    
+                    if (post == null)
+                    {
+                        throw new ArgumentException("El post no existe.");
+                    }
+
+                    post.DeletedAt = DateTime.Now;
+                    _db.Post.Update(post);
+                    await _db.SaveChangesAsync(token);
+                });
+            }
+            catch (ArgumentException ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ocurrió un error inesperado al eliminar el post.");
+            }
         }
 
         public async Task<List<PostDTO>> GetAllPosts()
