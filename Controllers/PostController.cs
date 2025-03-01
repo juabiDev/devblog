@@ -63,6 +63,27 @@ namespace DevBlog.Controllers
             }
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<PostDTO>> GetPostById(Guid id)
+        {
+            try
+            {
+                return await _postService.GetPostById(id);
+            }
+            catch (ArgumentException excep)
+            {
+                return BadRequest(excep.Message);
+            }
+            catch (DbException excep)
+            {
+                return StatusCode(500, "El sistema no esta disponible en estos momentos");
+            }
+            catch (Exception excep)
+            {
+                return StatusCode(500, "El sistema no esta disponible en estos momentos");
+            }
+        }
+
         [HttpGet]
         public async Task<ActionResult<List<PostDTO>>> GetAllPosts()
         {
