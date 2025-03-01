@@ -24,7 +24,9 @@ var connectionString = builder.Configuration["ConnectionStrings:DefaultConnectio
     .Replace("${DB_NAME}", Environment.GetEnvironmentVariable("DB_NAME"));
 
 builder.Services.AddDbContext<BlogDbContext>(options =>
-    options.UseSqlServer(connectionString));
+{
+    options.UseSqlServer(connectionString);
+});
 
 // Add Services
 builder.Services.AddScoped<IUserService, UserService>();
