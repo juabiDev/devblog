@@ -184,7 +184,7 @@ namespace DevBlog.Services
                 throw new Exception("Ocurrió un error inesperado al obtener los posts.");
             }
         }
-        public async Task<List<Post>> GetPostsByCategory(Guid categoryId)
+        public async Task<List<PostDTO>> GetPostsByCategory(Guid categoryId)
         {
 
             if (!await _db.Category.AnyAsync(c => c.Id == categoryId))
@@ -203,7 +203,8 @@ namespace DevBlog.Services
                         .Include(p => p.Comments)
                         .Where(p => p.CategoryId == categoryId)
                         .ToListAsync(token);
-                    return posts;
+
+                    return posts.Select(p => PostMapper.ToDTO(p)).ToList();
                 });
             }
             catch (Exception ex)
@@ -211,15 +212,37 @@ namespace DevBlog.Services
                 throw new Exception("Ocurrió un error inesperado al obtener los posts.");
             }
         }
-        public Task<List<Post>> GetPostsByTag(Guid tagId)
+        public async Task<List<PostDTO>> GetPostsByTag(Guid tagId)
+        {
+            if (!await _db.Tag.AnyAsync(t => t.Id == tagId))
+            {
+                throw new ArgumentException("La etiqueta no existe.");
+            }
+
+            try
+            {
+                return await _resiliencePipeline.ExecuteAsync(async token =>
+                {
+                    var posts = await _db.Post
+                        .Include(p => p.Author)
+                        .Include(p => p.Category)
+                        .Include(p => p.Tags)
+                        .Include(p => p.Comments)
+                        .Where(p => p.Tags.Any(t => t.Id == tagId))
+                        .ToListAsync(token);
+
+                    return posts.Select(p => PostMapper.ToDTO(p)).ToList();
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ocurrió un error inesperado al obtener los posts.");
+            }
+        }
+
+        public async Task<Post> UpdatePost(Post post)
         {
             throw new NotImplementedException();
         }
-
-        public Task<Post> UpdatePost(Post post)
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }
