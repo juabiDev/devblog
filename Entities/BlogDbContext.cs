@@ -40,9 +40,6 @@ namespace DevBlog.Entities
             modelBuilder.Entity<Comment>()
                 .HasQueryFilter(c => c.Author == null || c.Author.DeletedAt == null);
 
-            modelBuilder.Entity<Post>()
-                .HasQueryFilter(p => p.Author == null || p.Author.DeletedAt == null);
-
             modelBuilder.Entity<Follow>()
                 .HasQueryFilter(f => f.Follower == null || f.Follower.DeletedAt == null);
 
