@@ -44,19 +44,33 @@ namespace DevBlog.Services
             {
                 await _resiliencePipeline.ExecuteAsync(async token =>
                 {
-                    Category category = await _db.Category.FirstOrDefaultAsync(c => c.Id == post.CategoryId, token);
+                    var category = await _db.Category
+                        .Where(c => c.Id == post.CategoryId)
+                        .AsSplitQuery()
+                        .FirstOrDefaultAsync(token);
 
                     if (category == null)
                     {
-                        throw new ArgumentNullException(nameof(category), "La categoría no existe.");
+                        throw new ArgumentException("La categoría no existe.");
                     }
 
                     List<Tag> tags = await _db.Tag.Where(t => post.Tags.Contains(t.Id)).ToListAsync(token);
 
                     if (tags.Count != post.Tags.Count)
                     {
-                        throw new ArgumentNullException(nameof(tags), "Alguna etiqueta no existe.");
+                        throw new ArgumentException("Alguna etiqueta no existe.");
                     }
+
+                    var user = await _db.User
+                        .Where(u => u.Id == post.AuthorId)
+                        .AsSplitQuery()
+                        .FirstOrDefaultAsync(token);
+
+                    if (user == null)
+                    {
+                        throw new ArgumentException("El autor no existe.");
+                    }
+
 
                     Post postEntity = new Post
                     {
@@ -72,6 +86,10 @@ namespace DevBlog.Services
                     await _db.Post.AddAsync(postEntity, token);
                     await _db.SaveChangesAsync(token);
                 });
+            }
+            catch(ArgumentException ex)
+            {
+                throw new ArgumentException(ex.Message);
             }
             catch (Exception ex)
             {
