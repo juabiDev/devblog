@@ -159,8 +159,25 @@ namespace DevBlog.Services
 
         public async Task<List<PostDTO>> GetPostsByAuthor(Guid authorId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _resiliencePipeline.ExecuteAsync(async token =>
+                {
+                    var posts = await _db.Post
+                        .Include(p => p.Author)
+                        .Include(p => p.Category)
+                        .Include(p => p.Tags)
+                        .Include(p => p.Comments)
+                        .Where(p => p.AuthorId == authorId)
+                        .ToListAsync(token);
 
+                    return posts.Select(p => PostMapper.ToDTO(p)).ToList();
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ocurrió un error inesperado al obtener los posts.");
+            }
         }
         public Task<List<Post>> GetPostsByCategory(Guid categoryId)
         {
