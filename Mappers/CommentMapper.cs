@@ -10,7 +10,7 @@ namespace DevBlog.Mappers
             return new CommentDTO
             {
                 Id = comment.Id,
-                Text = comment.Text,
+                Content = comment.Content,
                 CreatedAt = comment.CreatedAt,
                 AuthorName = comment.Author.Name,
                 AuthorEmail = comment.Author.Email,
@@ -23,7 +23,7 @@ namespace DevBlog.Mappers
             return new Comment
             {
                 Id = commentDTO.Id,
-                Text = commentDTO.Text,
+                Content = commentDTO.Content,
                 CreatedAt = commentDTO.CreatedAt,
                 Author = new User
                 {
