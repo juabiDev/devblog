@@ -57,11 +57,11 @@ namespace DevBlog.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateComment(CreateCommentRequest comment)
+        public async Task<IActionResult> UpdateComment(Guid id, CreateCommentRequest comment)
         {
             try
             {
-                await _commentService.UpdateCommentAsync(comment);
+                await _commentService.UpdateCommentAsync(id, comment);
                 return Ok(
                     new
                     {
