@@ -105,8 +105,8 @@ namespace DevBlog.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult> EditUser(Guid id, [FromBody] UserDTO user)
+        [HttpPut]
+        public async Task<ActionResult> EditUser(Guid id, UserDTO user)
         {
             try
             {
