@@ -16,6 +16,7 @@ namespace DevBlog.DTOs
         public Guid CategoryId { get; set; }
         [Required(ErrorMessage = "Tags are required")]
         [MinLength(3, ErrorMessage = "At least three tags are required")]
+        [MaxLength(5, ErrorMessage = "At most five tags are allowed")]
         public ICollection<Guid> Tags { get; set; } = new List<Guid>();
     }
 }
