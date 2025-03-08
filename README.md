@@ -16,8 +16,8 @@ Before starting, make sure you have the following tools installed:
 ## 🚀 Clonar el repositorio / Clone the repository
 
 ```sh
-git clone https://github.com/tu-usuario/tu-repo.git
-cd tu-repo
+git clone https://github.com/juabiDev/devblog.git
+cd DevBlog
 ```
 
 ## 🔧 Configurar las variables de entorno / Set environment variables
@@ -151,8 +151,5 @@ docker-compose up --build -d
 - En caso de errores con la base de datos, revisa la conexión en SQL Server Management Studio o DBeaver.  
   In case of database errors, check the connection in SQL Server Management Studio or DBeaver.
 
----
 
-¡Tu API ya está lista para usarse! 🎉  
-Your API is now ready to use! 🎉
 
