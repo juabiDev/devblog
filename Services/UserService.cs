@@ -46,7 +46,11 @@ namespace DevBlog.Services
                 throw new ArgumentException("User email already exists");
             }
 
-            // Execute the operation with the resilience pipeline
+            if (_db.User.Any(e => e.UserName == user.UserName))
+            {
+                throw new ArgumentException("Username already exists");
+            }
+
             try
             {
                 await _resiliencePipeline.ExecuteAsync(async token =>
@@ -121,6 +125,11 @@ namespace DevBlog.Services
 
         public async Task EditUserAsync(Guid userId, UserDTO user)
         {
+            if (_db.User.Any(e => e.UserName == user.UserName && e.Id != userId))
+            {
+                throw new ArgumentException("Username already exists");
+            }
+
             try
             {
                 await _resiliencePipeline.ExecuteAsync(async token =>
@@ -137,7 +146,7 @@ namespace DevBlog.Services
                     }
 
                     userFounded.Name = user.Name;
-                    userFounded.LastName = user.LastName;
+                    userFounded.UserName = user.UserName;
                     userFounded.Email = user.Email;
                     userFounded.ProfilePhoto = user.ProfilePhoto;
                     userFounded.About = user.About;
