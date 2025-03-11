@@ -25,6 +25,10 @@ namespace DevBlog.Controllers
                 var comment = await _commentService.GetCommentAsync(id);
                 return Ok(comment);
             }
+            catch (ArgumentException ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+            }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
