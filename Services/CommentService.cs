@@ -60,7 +60,7 @@ namespace DevBlog.Services
                     {
                         Author = user,
                         Post = post,
-                        Content = comment.Content,
+                        Text = comment.Content,
                         CreatedAt = DateTime.UtcNow
                     };
                     
@@ -95,7 +95,6 @@ namespace DevBlog.Services
                     var comment = await _db.Comment
                         .Include(c => c.Author)
                         .AsSplitQuery()
-                        .IgnoreQueryFilters()
                         .FirstOrDefaultAsync(e => e.Id == id, token);
 
                     if (comment == null)
@@ -140,7 +139,6 @@ namespace DevBlog.Services
                     var comment = await _db.Comment
                         .Include(c => c.Author)
                         .AsSplitQuery()
-                        .IgnoreQueryFilters()
                         .FirstOrDefaultAsync(e => e.Id == id, token);
 
                     if (comment == null)
@@ -170,7 +168,6 @@ namespace DevBlog.Services
                     var comment = await _db.Comment
                         .Include(c => c.Author)
                         .AsSplitQuery()
-                        .IgnoreQueryFilters()
                         .FirstOrDefaultAsync(e => e.Id == id, token);
 
                     if (comment == null)
@@ -201,11 +198,14 @@ namespace DevBlog.Services
                         .Include(c => c.Author)
                         .Where(c => c.PostId == postId)
                         .AsSplitQuery()
-                        .IgnoreQueryFilters()
                         .ToListAsync(token);
 
                     return comments.Select(c => Mappers.CommentMapper.ToDTO(c));
                 });
+            }
+            catch (ArgumentException ex)
+            {
+                throw new ArgumentException(ex.Message);
             }
             catch (Exception ex)
             {
@@ -243,7 +243,7 @@ namespace DevBlog.Services
                         throw new ArgumentException("User not authorized to update this comment");
                     }
 
-                    commentEntity.Content = comment.Content;
+                    commentEntity.Text = comment.Content;
                     commentEntity.UpdatedAt = DateTime.UtcNow;
                     _db.Comment.Update(commentEntity);
                     await _db.SaveChangesAsync(token);
