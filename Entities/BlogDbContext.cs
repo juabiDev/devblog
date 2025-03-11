@@ -43,16 +43,20 @@ namespace DevBlog.Entities
             modelBuilder.Entity<Follow>()
                 .HasQueryFilter(f => f.Follower == null || f.Follower.DeletedAt == null);
 
-            modelBuilder.Entity<User>()
-                .HasIndex(t => t.Email).IsUnique();
+            modelBuilder.Entity<User>
+                (entity =>
+                {
+                    entity.HasIndex(e => e.UserName).IsUnique();
+                    entity.HasIndex(e => e.Email).IsUnique();
+                });
 
             modelBuilder.Entity<Follow>()
-                .HasKey(pf => new { pf.UserId, pf.FollowerId });
+                .HasKey(pf => new { pf.FollowedId, pf.FollowerId });
             
             modelBuilder.Entity<Follow>()
-                .HasOne(pf => pf.User)
+                .HasOne(pf => pf.Followed)
                 .WithMany(p => p.Followers)
-                .HasForeignKey(pf => pf.UserId)
+                .HasForeignKey(pf => pf.FollowedId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Follow>()
