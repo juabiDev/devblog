@@ -10,7 +10,7 @@ namespace DevBlog.Mappers
             return new User
             {
                 Name = user.Name,
-                LastName = user.LastName,
+                UserName = user.UserName,
                 Email = user.Email,
                 ProfilePhoto = user.ProfilePhoto ?? string.Empty, 
                 About = user.About ?? string.Empty 
@@ -22,7 +22,7 @@ namespace DevBlog.Mappers
             return new UserDTO
             {
                 Name = user.Name,
-                LastName = user.LastName,
+                UserName = user.UserName,
                 Email = user.Email,
                 ProfilePhoto = user.ProfilePhoto ?? string.Empty,
                 About = user.About ?? string.Empty

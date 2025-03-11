@@ -10,11 +10,11 @@ namespace DevBlog.Mappers
             return new CommentDTO
             {
                 Id = comment.Id,
-                Content = comment.Content,
+                Content = comment.Text,
                 CreatedAt = comment.CreatedAt,
                 AuthorName = comment.Author.Name,
                 AuthorEmail = comment.Author.Email,
-                AuthorLastName = comment.Author.LastName,
+                AuthorLastName = comment.Author.UserName,
                 AuthorProfilePhoto = comment.Author.ProfilePhoto
             };
         }
@@ -23,13 +23,13 @@ namespace DevBlog.Mappers
             return new Comment
             {
                 Id = commentDTO.Id,
-                Content = commentDTO.Content,
+                Text = commentDTO.Content,
                 CreatedAt = commentDTO.CreatedAt,
                 Author = new User
                 {
                     Name = commentDTO.AuthorName,
                     Email = commentDTO.AuthorEmail,
-                    LastName = commentDTO.AuthorLastName,
+                    UserName = commentDTO.AuthorLastName,
                     ProfilePhoto = commentDTO.AuthorProfilePhoto
                 }
             };
