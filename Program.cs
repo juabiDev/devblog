@@ -32,6 +32,7 @@ builder.Services.AddDbContext<BlogDbContext>(options =>
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<IFollowService, FollowService>();
 
 var app = builder.Build();
 
