@@ -216,7 +216,7 @@ namespace DevBlog.Services
 
             if (!await _db.Category.AnyAsync(c => c.Id == categoryId))
             {
-                throw new ArgumentException("La categoría no existe.");
+                throw new ArgumentException("Category not found");
             }
 
             try
