@@ -7,8 +7,8 @@ namespace DevBlog.DTOs
         [Required(ErrorMessage = "Name is required")]
         public string Name { get; set; }
 
-        [Required(ErrorMessage = "Last name is required")]
-        public string LastName { get; set; }
+        [Required(ErrorMessage = "Username is required")]
+        public string UserName { get; set; }
 
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Invalid email")]
