@@ -5,13 +5,13 @@ namespace DevBlog.Entities
     public class BlogDbContext : DbContext
     {
 
-        public DbSet<User> User { get; set; }
-        public DbSet<Follow> Follow { get; set; }
-        public DbSet<Category> Category { get; set; }
-        public DbSet<Comment> Comment { get; set; }
-        public DbSet<Tag> Tag { get; set; }
-        public DbSet<Post> Post { get; set; }
-        public DbSet<Reaction> Reaction { get; set; }
+        public virtual DbSet<User> User { get; set; }
+        public virtual DbSet<Follow> Follow { get; set; }
+        public virtual DbSet<Category> Category { get; set; }
+        public virtual DbSet<Comment> Comment { get; set; }
+        public virtual DbSet<Tag> Tag { get; set; }
+        public virtual DbSet<Post> Post { get; set; }
+        public virtual DbSet<Reaction> Reaction { get; set; }
 
         public BlogDbContext(DbContextOptions options) : base(options)
         {
