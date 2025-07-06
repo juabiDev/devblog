@@ -6,8 +6,10 @@ import { Menu, X, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { logout } from "@/app/api/api"
 
-export function Header() {
+// TODO: implement isLogged funcionality using cookie helper
+export function Header({ isLogged = false }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
@@ -25,14 +27,28 @@ export function Header() {
               <Input type="search" placeholder="Search..." className="w-64 pl-8" />
             </div>
             <ThemeToggle />
-            <Link href="/login">
-              <Button variant="outline" size="sm">
-                Log in
-              </Button>
-            </Link>
-            <Link href="/signup">
-              <Button size="sm">Sign up</Button>
-            </Link>
+
+            {isLogged ? (
+              <>
+                <Link href="/profile">
+                  <Button size="sm">Profile</Button>
+                </Link>
+                <Link href="/logout" onClick={logout}>
+                  <Button size="sm">Logout</Button>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="outline" size="sm">
+                    Log in
+                  </Button>
+                </Link>
+                <Link href="/signup">
+                  <Button size="sm">Sign up</Button>
+                </Link>
+              </>
+            )}
           </div>
           <div className="flex md:hidden items-center space-x-2">
             <ThemeToggle />
