@@ -11,16 +11,31 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Github, Twitter } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { login } from "@/app/api/api"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 export default function LoginPage() {
+  const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [rememberMe, setRememberMe] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle login logic here
-    console.log({ email, password, rememberMe })
+    const isLoggedIn = await login(email, password)
+    if (isLoggedIn) {
+      router.push("/")
+    }
+    else {
+      <Dialog>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Login failed</DialogTitle>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+    }
   }
 
   return (
