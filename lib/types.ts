@@ -10,3 +10,9 @@ type Post = {
     image: URL
 }
 
+type CreateUserRequest = {
+    name: string
+    username: string
+    email: string
+    password: string
+}
