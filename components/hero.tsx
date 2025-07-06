@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button"
+import { HeroImage } from "./hero-image"
 
 export function Hero() {
+
   return (
     <section className="py-12 md:py-24 bg-muted/50">
       <div className="container mx-auto px-4 grid md:grid-cols-2 gap-8 items-center">
@@ -20,12 +22,8 @@ export function Hero() {
           </div>
         </div>
         <div className="relative">
-          <div className="aspect-[4/3] rounded-lg overflow-hidden shadow-xl">
-            <img
-              src="/placeholder.svg?height=600&width=800&text=DevBlog"
-              alt="DevBlog Hero"
-              className="object-cover w-full h-full"
-            />
+          <div className="aspect-[4/3] rounded-lg overflow-hidden">
+            <HeroImage />
           </div>
           <div className="absolute -bottom-6 -left-6 bg-background p-4 rounded-lg shadow-lg border max-w-[200px]">
             <p className="font-medium mb-1">Join our community</p>
