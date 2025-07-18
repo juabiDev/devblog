@@ -20,15 +20,12 @@ public class UserController : ControllerBase
 	}
 
 	[HttpPost]
-	public async Task<ActionResult> Create([FromBody] UserDTO user)
+	public async Task<IActionResult> Create([FromBody] UserDTO user)
 	{
 		try
 		{
-			if (!base.ModelState.IsValid)
-			{
-				return BadRequest(base.ModelState);
-			}
 			await _userService.AddUserAsync(user);
+
 			return Ok(new
 			{
 				message = "User created successfully"
@@ -36,17 +33,15 @@ public class UserController : ControllerBase
 		}
 		catch (ArgumentException ex)
 		{
-			ArgumentException excep = ex;
-			return BadRequest(excep.Message);
+			return BadRequest(ex.Message);
 		}
 		catch (DbException)
 		{
 			return StatusCode(500, "El sistema no esta disponible en estos momentos");
 		}
-		catch (Exception ex3)
+		catch (Exception ex)
 		{
-			Exception excep2 = ex3;
-			return StatusCode(500, excep2.Message);
+			return StatusCode(500, "El sistema no esta disponible en estos momentos");
 		}
 	}
 
@@ -68,7 +63,7 @@ public class UserController : ControllerBase
 	{
 		try
 		{
-			UserDTO user = await _userService.GetUserByIdAsync(id: id);
+			var user = await _userService.GetUserByIdAsync(id: id);
 
 			if (user == null)
 			{
@@ -80,18 +75,23 @@ public class UserController : ControllerBase
 
 			return user;
 		}
-		catch (Exception)
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception)
 		{
 			return StatusCode(500, "El sistema no esta disponible en estos momentos");
 		}
 	}
 
 	[HttpDelete("{id}")]
-	public async Task<ActionResult> DeleteUser(Guid id)
+	public async Task<IActionResult> DeleteUser(Guid id)
 	{
 		try
 		{
 			await _userService.DeleteUserAsync(id);
+
 			return Ok(new
 			{
 				message = "User deleted successfully"
@@ -99,8 +99,7 @@ public class UserController : ControllerBase
 		}
 		catch (ArgumentException ex)
 		{
-			ArgumentException excep = ex;
-			return BadRequest(excep.Message);
+			return BadRequest(ex.Message);
 		}
 		catch (Exception)
 		{
@@ -109,15 +108,12 @@ public class UserController : ControllerBase
 	}
 
 	[HttpPut]
-	public async Task<ActionResult> EditUser(Guid id, UserDTO user)
+	public async Task<IActionResult> EditUser(Guid id, UserDTO user)
 	{
 		try
 		{
-			if (!base.ModelState.IsValid)
-			{
-				return BadRequest(base.ModelState);
-			}
 			await _userService.EditUserAsync(id, user);
+
 			return Ok(new
 			{
 				message = "User updated successfully"
@@ -125,8 +121,7 @@ public class UserController : ControllerBase
 		}
 		catch (ArgumentException ex)
 		{
-			ArgumentException excep = ex;
-			return BadRequest(excep.Message);
+			return BadRequest(ex.Message);
 		}
 		catch (Exception)
 		{
