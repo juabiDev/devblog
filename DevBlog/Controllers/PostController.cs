@@ -10,7 +10,7 @@ namespace DevBlog.Controllers;
 
 [ApiController]
 [Route("api/posts")]
-public class PostController : Controller
+public class PostController : ControllerBase
 {
 	private readonly IPostService _postService;
 
@@ -20,7 +20,7 @@ public class PostController : Controller
 	}
 
 	[HttpPost]
-	public async Task<ActionResult> Create([FromBody] CreatePostRequest post)
+	public async Task<IActionResult> Create([FromBody] CreatePostRequest post)
 	{
 		try
 		{
@@ -42,7 +42,7 @@ public class PostController : Controller
 	}
 
 	[HttpDelete("{id}")]
-	public async Task<ActionResult> Delete(Guid id, string userEmail)
+	public async Task<IActionResult> Delete(Guid id, string userEmail)
 	{
 		try
 		{
@@ -54,8 +54,7 @@ public class PostController : Controller
 		}
 		catch (ArgumentException ex)
 		{
-			ArgumentException excep = ex;
-			return BadRequest(excep.Message);
+			return BadRequest(ex.Message);
 		}
 		catch (DbException)
 		{
@@ -76,8 +75,7 @@ public class PostController : Controller
 		}
 		catch (ArgumentException ex)
 		{
-			ArgumentException excep = ex;
-			return BadRequest(excep.Message);
+			return BadRequest(ex.Message);
 		}
 		catch (DbException)
 		{
@@ -98,8 +96,7 @@ public class PostController : Controller
 		}
 		catch (ArgumentException ex)
 		{
-			ArgumentException excep = ex;
-			return BadRequest(excep.Message);
+			return BadRequest(ex.Message);
 		}
 		catch (DbException)
 		{

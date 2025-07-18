@@ -7,7 +7,7 @@ namespace DevBlog.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CategoryController : Controller
+public class CategoryController : ControllerBase
 {
 	private readonly ICategoryService _categoryService;
 
@@ -25,7 +25,7 @@ public class CategoryController : Controller
 		}
 		catch (Exception ex)
 		{
-			return StatusCode(500, ex.Message);
+			return StatusCode(500, "El sistema no esta disponible en estos momentos");
 		}
 	}
 
@@ -42,7 +42,7 @@ public class CategoryController : Controller
 		}
 		catch (Exception ex)
 		{
-			return StatusCode(500, ex.Message);
+			return StatusCode(500, "El sistema no esta disponible en estos momentos");
 		}
 	}
 }
