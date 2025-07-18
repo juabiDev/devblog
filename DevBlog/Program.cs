@@ -14,8 +14,8 @@ using Services.Services;
 using Repositories.Repositories;
 using RepositoriesContracts.RepositoriesContracts;
 using Logger.Logger;
-using Entities.Entities;
 using ServicesContracts.ServicesContracts;
+using Repositories.DBContext;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,13 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using Entities.SeedData;
+using Entities.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore.SqlServer.Infrastructure.Internal;
 
-namespace Entities.Entities;
+namespace Repositories.DBContext;
 
 public class BlogDbContext : DbContext
 {

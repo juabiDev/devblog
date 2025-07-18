@@ -5,7 +5,7 @@ using Entities.Enum;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Entities.SeedData;
+namespace Repositories.SeedData;
 
 public static class SeedData
 {
