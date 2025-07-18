@@ -1,191 +1,73 @@
-﻿# README - DevBlog
+﻿# DevBlog
 
-## 📌 Requisitos previos / Prerequisites
+**DevBlog** is a modern full-stack blogging platform designed for developers who want to share technical content, ideas, and experiences. The project aims to provide a clean, scalable, and maintainable architecture both on the frontend and backend, following industry best practices.
 
-Antes de comenzar, asegúrate de tener instaladas las siguientes herramientas:  
-Before starting, make sure you have the following tools installed:
+---
 
-- [.NET SDK](https://dotnet.microsoft.com/en-us/download)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) o [SQL Server Management Studio (SSMS)](https://learn.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms)  
-  or [SQL Server Management Studio (SSMS)](https://learn.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms)
-- [DBeaver](https://dbeaver.io/) (opcional, si prefieres otro manejador de base de datos)  
-  (optional, if you prefer another database manager)
-- [Git](https://git-scm.com/downloads)
+## ✨ About the Project
 
-## 🚀 Clonar el repositorio / Clone the repository
+DevBlog is structured as a full-stack monorepo containing two main components:
 
-```sh
-git clone https://github.com/juabiDev/devblog.git
-cd DevBlog
-```
+- `frontend/` – A modern web interface built with [Next.js](https://nextjs.org), designed to deliver a fast and intuitive user experience.
+- `backend/` – A robust RESTful API built with [ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/), following clean architecture principles, layered separation of concerns, and scalable design.
 
-## 🔧 Configurar las variables de entorno / Set environment variables
+This separation allows each part of the application to evolve independently while remaining tightly integrated through well-defined contracts and API communication.
 
-Crea un archivo `.env` en la raíz del proyecto y añade las siguientes variables:  
-Create a `.env` file at the root of the project and add the following variables:
+---
 
-```env
-DB_HOST=localhost
-DB_PORT=1433
-DB_NAME=TuBaseDeDatos / YourDatabaseName
-DB_USER=sa
-DB_PASSWORD=TuContraseñaSegura / YourSecurePassword
-JWT_SECRET=clave-super-secreta / super-secret-key
-```
+## 🧱 Architecture
 
-Asegúrate de modificar los valores según tu configuración.  
-Make sure to modify the values according to your setup.
-
-## 📦 Instalar dependencias / Install dependencies
-
-```sh
-dotnet restore
-```
-
-## 🛠️ Generar y Aplicar Migraciones a la Base de Datos / Generate and Apply Database Migrations
-
-Las migraciones no están incluidas en el repositorio, por lo que debes generarlas manualmente.  
-Migrations are not included in the repository, so you must generate them manually.
-
-Ejecuta los siguientes comandos:  
-Run the following commands:
-
-C:\Users\User\source\repos\DevBlog>
-
-```sh
-dotnet ef migrations add InitialMigration --project Entities --startup-project DevBlog
-```
-
-Luego, aplica las migraciones:  
-Then, apply the migrations:
-
-C:\Users\User\source\repos\DevBlog\DevBlog>
-
-```sh
-dotnet ef database update
-```
-
-Si en el futuro necesitas agregar más cambios en la base de datos, recuerda crear nuevas migraciones con:  
-If you need to add more changes to the database in the future, remember to create new migrations with:
-
-C:\Users\User\source\repos\DevBlog\Entities>
-
-```sh
-dotnet ef migrations add NombreDeLaMigracion / MigrationName
-```
-
-## 🐳 Levantar los servicios con Docker / Start services with Docker
-
-Si la aplicación usa Docker, ejecuta:  
-If the application uses Docker, run:
-
-```sh
-docker-compose up -d
-```
-
-Esto iniciará los contenedores necesarios, como la base de datos SQL Server.  
-This will start the necessary containers, such as the SQL Server database.
-
-Para verificar que los contenedores están corriendo:  
-To check that the containers are running:
-
-```sh
-docker ps
-```
-
-Si necesitas detener los contenedores:  
-If you need to stop the containers:
-
-```sh
-docker-compose down
-```
-
-## ▶️ Ejecutar la API / Run the API
-
-```sh
-dotnet run
-```
-
-Esto iniciará el servidor en `http://localhost:5000` (o el puerto que hayas configurado).  
-This will start the server at `http://localhost:5000` (or the port you have configured).
-
-## 📡 Probar la API / Test the API
-
-Puedes probar los endpoints con herramientas como [Postman](https://www.postman.com/) o [Swagger](https://swagger.io/).  
-You can test the endpoints with tools like [Postman](https://www.postman.com/) or [Swagger](https://swagger.io/).
-
-Si Swagger está habilitado, puedes acceder en:  
-If Swagger is enabled, you can access it at:
+The project is structured with long-term scalability and clarity in mind:
 
 ```
-http://localhost:5000/swagger
+DevBlog/
+├── backend/       # Backend codebase (API, Domain, Infrastructure)
+├── frontend/      # Frontend codebase (Next.js UI)
+└── README.md      # You are here
 ```
 
-## 🔄 Actualizar el Proyecto / Update the Project
+Each module (`backend/` and `frontend/`) contains its own `README.md` file with specific setup instructions, environment configuration, and development workflows.
 
-Para actualizar a la última versión del código, ejecuta:  
-To update to the latest version of the code, run:
+---
 
-```sh
-git pull origin main
-```
+## 🎯 Core Principles
 
-Luego, si hay cambios en las migraciones:  
-Then, if there are changes in the migrations:
+- **Separation of concerns** – Backend and frontend are organized independently, encouraging modular development.
+- **Clean architecture** – The backend follows the principles outlined by Uncle Bob, promoting testability and flexibility.
+- **Developer experience** – The frontend is optimized for fast iteration and maintainability.
+- **Scalability** – The structure is designed to support future growth, including authentication, real-time features, and integrations.
 
-```sh
-dotnet ef migrations add NombreDeLaNuevaMigracion / NewMigrationName
-```
-```sh
-dotnet ef database update
-```
+---
 
-Si hay cambios en Docker:  
-If there are changes in Docker:
+## 🚀 Getting Started
 
-```sh
-docker-compose up --build -d
-```
+To run or contribute to this project:
 
-## 📜 Notas Adicionales / Additional Notes
+1. Navigate to the `backend/` or `frontend/` directories.
+2. Follow the setup instructions in their respective `README.md` files.
+3. Optionally, use Docker for a fully containerized development environment.
 
-- Asegúrate de que Docker Desktop esté ejecutándose antes de levantar los servicios.  
-  Make sure Docker Desktop is running before starting the services.
-- Revisa las configuraciones en `appsettings.json` si necesitas cambiar algún parámetro.  
-  Check the settings in `appsettings.json` if you need to change any parameters.
-- En caso de errores con la base de datos, revisa la conexión en SQL Server Management Studio o DBeaver.  
-  In case of database errors, check the connection in SQL Server Management Studio or DBeaver.
+---
 
+## 🛠️ Development Workflow
 
-## Resumen de Comandos de uso comun
+- Issues, improvements, and new features are tracked through Git.
+- Each module can be developed, tested, and deployed independently.
+- Pull requests should follow clean commit standards and reflect modular, testable code.
 
-  | Acción                                   | Comando                                      | Descripción                                                                                                                |
-| ---------------------------------------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| 🔨 **Construir e iniciar todo**          | `docker-compose up --build`                  | Construye la imagen desde el `Dockerfile`, levanta la app y la base de datos. Usar cada vez que cambies el código de .NET. |
-| ▶️ **Iniciar sin reconstruir**           | `docker-compose up`                          | Inicia los contenedores si ya están creados, sin recompilar la imagen.                                                     |
-| 🛑 **Apagar contenedores**               | `docker-compose down`                        | Detiene y elimina los contenedores, pero conserva los volúmenes (como la base de datos).                                   |
-| 💣 **Eliminar contenedores y volúmenes** | `docker-compose down -v`                     | Igual que el anterior, pero también borra los datos persistidos (base de datos).                                           |
-| 📄 **Ver logs en tiempo real**           | `docker-compose logs -f`                     | Muestra los logs de todos los servicios (útil para debug).                                                                 |
-| 📦 **Ver contenedores activos**          | `docker ps`                                  | Muestra los contenedores que están corriendo actualmente.                                                                  |
-| 🧠 **Entrar al contenedor de la app**    | `docker exec -it nombre_del_contenedor bash` | Permite entrar al contenedor para ejecutar comandos dentro (como `dotnet ef`).                                             |
+---
 
-## 📦 Dependencias NuGet
+## 🤝 Contributing
 
-Este proyecto utiliza las siguientes versiones unificadas para evitar conflictos entre proyectos:
+We welcome contributions! If you’d like to report a bug, suggest an enhancement, or submit a pull request, please follow these steps:
 
-- Microsoft.Extensions.Options: 8.0.0
-- Microsoft.Extensions.Options.Configuration: 8.0.0
-- Microsoft.Extensions.Identity.Core: 8.0.0
-- Microsoft.EntityFrameworkCore.Relational: 8.0.14
-- Microsoft.EntityFrameworkCore.Design: 8.0.14
-- Microsoft.EntityFrameworkCore: 8.0.14
-- Microsoft.EntityFrameworkCore.SqlServer: 8.0.14
-- Swashbuckle.AspNetCore: 8.0.0
-- Swashbuckle.AspNetCore.Swagger: 8.0.0
-- Swashbuckle.AspNetCore.SwaggerGen: 8.0.0
-- Swashbuckle.AspNetCore.SwaggerUI: 8.0.0
-- Microsoft.Data.SqlClient: 6.0.2
-- Microsoft.AspNetCore.Authentication.JwtBearer: 8.0.0
-- System.IdentityModel.Tokens.Jwt: 6.35.0
-- Polly.Core: 8.5.2
+1. Fork the repository  
+2. Create a new branch  
+3. Make your changes  
+4. Open a pull request with a clear description
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**.
