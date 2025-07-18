@@ -5,43 +5,7 @@ import Link from "next/link"
 import { Avatar } from '@/components/ui/avatar';
 import { ArrowLeft, Bookmark, MessageSquare, Share2, ThumbsUp } from "lucide-react";
 import { Button } from "./ui/button";
-
-async function getPosts() {
-    const res = await fetch('http://localhost:5000/api/posts', {
-      // Para evitar caché si estás en desarrollo:
-      cache: 'no-store',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      method: 'GET'
-    })
-
-    console.log(res)
-  
-    if (res.ok) {
-      return res.json()
-    } else {
-      return []
-    }
-
-}
-
-async function getPostById(postID : any) {
-    const res = await fetch(`http://localhost:5000/api/posts/${postID}`, {
-      // Para evitar caché si estás en desarrollo:
-      cache: 'no-store',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      method: 'GET'
-    })
-    
-    if (!res.ok) {
-      throw new Error('Error al cargar los posts')
-    }
-    
-    return res.json()
-}
+import { getPostById, getPosts } from "@/app/api/api";
 
 export async function Post({ postID } : any) {
     const post = await getPostById(postID)
@@ -158,7 +122,7 @@ export async function Post({ postID } : any) {
   
 export default async function PostList() {
     const posts = await getPosts()
-    const formattedPosts = posts.length > 0 ? posts.map(postDataFormatter) : []
+    const formattedPosts = posts != null && posts.length > 0 ? posts.map(postDataFormatter) : []
   
     return (
         <>
