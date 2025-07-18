@@ -3,9 +3,6 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Polly.Retry;
 using Polly;
-using ServicesContracts;
-using Repositories;
-using Entities;
 using Logger;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -17,6 +14,8 @@ using Services.Services;
 using Repositories.Repositories;
 using RepositoriesContracts.RepositoriesContracts;
 using Logger.Logger;
+using Entities.Entities;
+using ServicesContracts.ServicesContracts;
 
 var builder = WebApplication.CreateBuilder(args);
 

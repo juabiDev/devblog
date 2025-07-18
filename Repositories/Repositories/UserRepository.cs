@@ -4,13 +4,13 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Entities;
+using Entities.Entities;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Polly;
 using RepositoriesContracts.RepositoriesContracts;
 
-namespace Repositories;
+namespace Repositories.Repositories;
 
 public class UserRepository : IUserRepository
 {
@@ -32,11 +32,11 @@ public class UserRepository : IUserRepository
 		}
 		try
 		{
-			await _resiliencePipeline.ExecuteAsync((Func<CancellationToken, ValueTask>)async delegate(CancellationToken token)
+			await _resiliencePipeline.ExecuteAsync(async delegate(CancellationToken token)
 			{
 				await _dbContext.User.AddAsync(user, token);
-				await ((DbContext)_dbContext).SaveChangesAsync(token);
-			}, default(CancellationToken));
+				await _dbContext.SaveChangesAsync(token);
+			}, default);
 		}
 		catch (DbUpdateException)
 		{
@@ -57,9 +57,9 @@ public class UserRepository : IUserRepository
 	{
 		try
 		{
-			await _resiliencePipeline.ExecuteAsync((Func<CancellationToken, ValueTask>)async delegate(CancellationToken token)
+			await _resiliencePipeline.ExecuteAsync(async delegate(CancellationToken token)
 			{
-				User user = await EntityFrameworkQueryableExtensions.FirstOrDefaultAsync<User>(EntityFrameworkQueryableExtensions.IgnoreQueryFilters<User>(RelationalQueryableExtensions.AsSplitQuery<User>((IQueryable<User>)EntityFrameworkQueryableExtensions.Include<User, ICollection<Post>>((IQueryable<User>)EntityFrameworkQueryableExtensions.Include<User, ICollection<Follow>>((IQueryable<User>)_dbContext.User, (Expression<Func<User, ICollection<Follow>>>)((User p) => p.Followers)), (Expression<Func<User, ICollection<Post>>>)((User p) => p.Posts)))), (Expression<Func<User, bool>>)((User e) => e.Id == id), token);
+				User user = await _dbContext.User.Include((Expression<Func<User, ICollection<Follow>>>)((p) => p.Followers)).Include((Expression<Func<User, ICollection<Post>>>)((p) => p.Posts)).AsSplitQuery().IgnoreQueryFilters().FirstOrDefaultAsync((Expression<Func<User, bool>>)((e) => e.Id == id), token);
 				if (user == null)
 				{
 					throw new ArgumentException("User not found");
@@ -70,8 +70,8 @@ public class UserRepository : IUserRepository
 				}
 				user.DeletedAt = DateTime.UtcNow;
 				_dbContext.User.Update(user);
-				await ((DbContext)_dbContext).SaveChangesAsync(token);
-			}, default(CancellationToken));
+				await _dbContext.SaveChangesAsync(token);
+			}, default);
 		}
 		catch (ArgumentNullException)
 		{
@@ -101,7 +101,7 @@ public class UserRepository : IUserRepository
 	{
 		try
 		{
-			return await _resiliencePipeline.ExecuteAsync<User>((Func<CancellationToken, ValueTask<User>>)(async (CancellationToken token) => await EntityFrameworkQueryableExtensions.FirstOrDefaultAsync<User>((IQueryable<User>)EntityFrameworkQueryableExtensions.Include<User, ICollection<Follow>>((IQueryable<User>)EntityFrameworkQueryableExtensions.Include<User, ICollection<Post>>((IQueryable<User>)_dbContext.User, (Expression<Func<User, ICollection<Post>>>)((User u) => u.Posts)), (Expression<Func<User, ICollection<Follow>>>)((User u) => u.Followers)), (Expression<Func<User, bool>>)((User u) => u.Email == email), token)), default(CancellationToken));
+			return await _resiliencePipeline.ExecuteAsync(async (token) => await _dbContext.User.Include((Expression<Func<User, ICollection<Post>>>)((u) => u.Posts)).Include((Expression<Func<User, ICollection<Follow>>>)((u) => u.Followers)).FirstOrDefaultAsync((Expression<Func<User, bool>>)((u) => u.Email == email), token), default);
 		}
 		catch (ArgumentException)
 		{
@@ -122,7 +122,7 @@ public class UserRepository : IUserRepository
 	{
 		try
 		{
-			return await _resiliencePipeline.ExecuteAsync<User>((Func<CancellationToken, ValueTask<User>>)(async (CancellationToken token) => await _dbContext.User.FindAsync(new object[1] { id })), default(CancellationToken));
+			return await _resiliencePipeline.ExecuteAsync(async (token) => await _dbContext.User.FindAsync(new object[1] { id }), default(CancellationToken));
 		}
 		catch (ArgumentException)
 		{
@@ -146,7 +146,7 @@ public class UserRepository : IUserRepository
 	{
 		try
 		{
-			return await _resiliencePipeline.ExecuteAsync<User>((Func<CancellationToken, ValueTask<User>>)(async (CancellationToken token) => await EntityFrameworkQueryableExtensions.FirstOrDefaultAsync<User>((IQueryable<User>)_dbContext.User, (Expression<Func<User, bool>>)((User u) => u.UserName == username), default(CancellationToken))), default(CancellationToken));
+			return await _resiliencePipeline.ExecuteAsync(async (token) => await _dbContext.User.FirstOrDefaultAsync((Expression<Func<User, bool>>)((u) => u.UserName == username), default), default(CancellationToken));
 		}
 		catch (ArgumentException)
 		{
@@ -170,7 +170,7 @@ public class UserRepository : IUserRepository
 	{
 		try
 		{
-			return await _resiliencePipeline.ExecuteAsync<List<User>>((Func<CancellationToken, ValueTask<List<User>>>)(async (CancellationToken token) => await EntityFrameworkQueryableExtensions.ToListAsync<User>((IQueryable<User>)_dbContext.User, token)), default(CancellationToken));
+			return await _resiliencePipeline.ExecuteAsync(async (token) => await _dbContext.User.ToListAsync(token), default);
 		}
 		catch (DbUpdateException)
 		{
@@ -190,17 +190,17 @@ public class UserRepository : IUserRepository
 	{
 		try
 		{
-			await _resiliencePipeline.ExecuteAsync((Func<CancellationToken, ValueTask>)async delegate(CancellationToken token)
+			await _resiliencePipeline.ExecuteAsync(async delegate(CancellationToken token)
 			{
-				if (((IQueryable<User>)_dbContext.User).Any((User e) => e.UserName == user.UserName && e.Id != userId))
+				if (_dbContext.User.Any((e) => e.UserName == user.UserName && e.Id != userId))
 				{
 					throw new ArgumentException("Username already exists");
 				}
-				if (((IQueryable<User>)_dbContext.User).Any((User e) => e.Email == user.Email && e.Id != userId))
+				if (_dbContext.User.Any((e) => e.Email == user.Email && e.Id != userId))
 				{
 					throw new ArgumentException("Email already exists");
 				}
-				User userFounded = await EntityFrameworkQueryableExtensions.FirstOrDefaultAsync<User>(RelationalQueryableExtensions.AsSplitQuery<User>(((IQueryable<User>)_dbContext.User).Where((User e) => e.Email == user.Email && e.Id == userId)), token);
+				User userFounded = await _dbContext.User.Where((e) => e.Email == user.Email && e.Id == userId).AsSplitQuery().FirstOrDefaultAsync(token);
 				if (userFounded == null)
 				{
 					throw new ArgumentException("User not found");
@@ -212,8 +212,8 @@ public class UserRepository : IUserRepository
 				userFounded.About = user.About;
 				userFounded.UpdatedAt = DateTime.UtcNow;
 				_dbContext.User.Update(userFounded);
-				await ((DbContext)_dbContext).SaveChangesAsync(token);
-			}, default(CancellationToken));
+				await _dbContext.SaveChangesAsync(token);
+			}, default);
 		}
 		catch (DbUpdateException)
 		{

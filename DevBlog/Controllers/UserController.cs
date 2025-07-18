@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using ServicesContracts;
 using ServicesContracts.DTOs;
+using ServicesContracts.ServicesContracts;
 
 namespace DevBlog.Controllers;
 
 [ApiController]
-[Route("api/users")]
+[Route("api/[controller]")]
 public class UserController : ControllerBase
 {
 	private readonly IUserService _userService;

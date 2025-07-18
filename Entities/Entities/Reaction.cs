@@ -1,7 +1,7 @@
 using System;
 using Entities.Enum;
 
-namespace Entities;
+namespace Entities.Entities;
 
 public class Reaction
 {
@@ -9,5 +9,5 @@ public class Reaction
 
 	public ReactionType ReactionType { get; set; }
 
-	public User? User { get; set; }
+	public User User { get; set; }
 }

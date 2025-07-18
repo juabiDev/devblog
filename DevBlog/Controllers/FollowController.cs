@@ -1,8 +1,8 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using ServicesContracts;
 using ServicesContracts.DTOs;
+using ServicesContracts.ServicesContracts;
 
 namespace DevBlog.Controllers;
 

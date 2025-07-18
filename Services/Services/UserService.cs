@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Entities;
+using Entities.Entities;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RepositoriesContracts.RepositoriesContracts;
-using ServicesContracts;
 using ServicesContracts.DTOs;
 using ServicesContracts.Mappers;
+using ServicesContracts.ServicesContracts;
 
 namespace Services.Services;
 

@@ -1,4 +1,4 @@
-using Entities;
+using Entities.Entities;
 using ServicesContracts.DTOs;
 
 namespace ServicesContracts.Mappers;

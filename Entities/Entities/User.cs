@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Entities;
+namespace Entities.Entities;
 
 public class User
 {
@@ -15,9 +15,9 @@ public class User
 
 	public string Email { get; set; }
 
-	public string? ProfilePhoto { get; set; }
+	public string ProfilePhoto { get; set; }
 
-	public string? About { get; set; }
+	public string About { get; set; }
 
 	public DateTime CreatedAt { get; set; }
 

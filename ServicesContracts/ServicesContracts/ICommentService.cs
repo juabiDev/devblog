@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using ServicesContracts.DTOs;
 
-namespace ServicesContracts;
+namespace ServicesContracts.ServicesContracts;
 
 public interface ICommentService
 {

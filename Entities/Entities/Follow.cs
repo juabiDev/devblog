@@ -1,6 +1,6 @@
 using System;
 
-namespace Entities;
+namespace Entities.Entities;
 
 public class Follow
 {

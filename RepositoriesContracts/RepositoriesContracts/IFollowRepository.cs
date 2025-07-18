@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Entities;
+using Entities.Entities;
 using ServicesContracts.DTOs;
 
 namespace RepositoriesContracts.RepositoriesContracts;

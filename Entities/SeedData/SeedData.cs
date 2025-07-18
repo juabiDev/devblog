@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Entities.Entities;
 using Entities.Enum;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

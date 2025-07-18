@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.SqlServer.Infrastructure.Internal;
 
-namespace Entities;
+namespace Entities.Entities;
 
 public class BlogDbContext : DbContext
 {
