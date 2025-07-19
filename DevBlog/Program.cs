@@ -16,6 +16,8 @@ using RepositoriesContracts.RepositoriesContracts;
 using Logger.Logger;
 using ServicesContracts.ServicesContracts;
 using Repositories.DBContext;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,18 +34,7 @@ Env.Load();
 // Add services to the container.
 builder.Services.AddControllers();
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.Cookie.Name = "devblog_auth";
-        options.Cookie.HttpOnly = true;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-        options.Cookie.SameSite = SameSiteMode.Strict;
-        options.LoginPath = "/auth/login";
-        options.LogoutPath = "/auth/logout";
-    });
-
-builder.Services.AddAuthorization();
+builder.Services.AddTransient<IJwtService, JwtService>();
 
 // Production environment
 // var connectionString = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING"); 
@@ -99,8 +90,27 @@ builder.Services.AddSingleton(ResiliencePipeline);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+// JWT
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+        };
+    });
 
+var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
@@ -122,17 +132,15 @@ app.UseCors(policy =>
           .AllowCredentials());
 
 app.UseAuthentication();
-app.UseRouting();
 app.UseAuthorization();
 
-// Habilitar Swagger en todos los entornos (Azure lo necesita)
+app.UseRouting();
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "DevBlog API v1");
 });
-
 
 // Mapear controladores
 app.MapControllers();
