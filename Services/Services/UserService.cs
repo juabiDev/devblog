@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Entities.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -25,7 +26,7 @@ public class UserService : IUserService
 		_userRepository = userRepository;
 	}
 
-	public async Task AddUserAsync(UserDTO user)
+	public async Task<UserDTO> AddUserAsync(CreateUserRequest user)
 	{
 		if (user == null)
 		{
@@ -34,19 +35,24 @@ public class UserService : IUserService
 		try
 		{
 			User userFoundedByEmail = await _userRepository.GetUserByEmailAsync(user.Email);
-			Console.WriteLine("userFoundedByEmail ", userFoundedByEmail);
+
 			if (userFoundedByEmail != null && userFoundedByEmail.Email == user.Email)
 			{
 				throw new ArgumentException("User email already exists");
 			}
 			User userFoundedByName = await _userRepository.GetUserByUsernameAsync(user.UserName);
-			Console.WriteLine("userFoundedByName ", userFoundedByName);
+
 			if (userFoundedByName != null && userFoundedByName.UserName == user.UserName)
 			{
 				throw new ArgumentException("Username already exists");
 			}
+
 			User userEntity = UserMapper.ToEntity(user);
-			await _userRepository.AddUserAsync(userEntity);
+			PasswordHasher<User> passwordHasher = new PasswordHasher<User>();
+
+			userEntity.PasswordHash = passwordHasher.HashPassword(userEntity, user.Password);
+
+			return UserMapper.ToDTO(await _userRepository.AddUserAsync(userEntity));
 		}
 		catch (ArgumentNullException ex)
 		{
@@ -229,4 +235,51 @@ public class UserService : IUserService
 			throw new Exception("Ocurrió un error inesperado al obtener el usuario.");
 		}
 	}
+
+    public async Task<UserDTO> Login(LoginRequest user)
+    {
+        try
+        {
+            User userFounded = await _userRepository.GetUserByEmailAsync(user.Email);
+
+			if (userFounded == null || (user.Password != userFounded.PasswordHash))
+			{
+				return null;
+			}
+
+            return UserMapper.ToDTO(userFounded);
+        }
+        catch (ArgumentNullException ex)
+        {
+            ArgumentNullException ex2 = ex;
+            _logger.LogError(ex2.Message, ex2);
+            throw new ArgumentNullException("id", "User ID cannot be null.");
+        }
+        catch (ArgumentException ex3)
+        {
+            ArgumentException ex4 = ex3;
+            _logger.LogError(ex4.Message, ex4);
+            throw new ArgumentException(ex4.Message);
+        }
+        catch (DbUpdateException ex5)
+        {
+            DbUpdateException ex6 = ex5;
+            DbUpdateException ex7 = ex6;
+            _logger.LogError(((Exception)(object)ex7).Message, ex7);
+            throw new Exception("Error al obtener el usuario en la base de datos.");
+        }
+        catch (SqlException ex8)
+        {
+            SqlException ex9 = ex8;
+            SqlException ex10 = ex9;
+            _logger.LogError(((Exception)(object)ex10).Message, ex10);
+            throw new Exception("Error al conectar la base de datos");
+        }
+        catch (Exception ex11)
+        {
+            Exception ex12 = ex11;
+            _logger.LogError(ex12.Message, ex12);
+            throw new Exception("Ocurrió un error inesperado al obtener el usuario.");
+        }
+    }
 }
