@@ -17,6 +17,19 @@ public static class UserMapper
 		};
 	}
 
+	public static User ToEntity(CreateUserRequest user)
+	{
+		return new User
+		{
+			Name = user.Name,
+			UserName = user.UserName,
+			Email = user.Email,
+			ProfilePhoto = user.ProfilePhoto ?? string.Empty,
+			About = user.About ?? string.Empty,
+			PasswordHash = user.Password
+		};
+	}
+
 	public static UserDTO ToDTO(User user)
 	{
 		return new UserDTO
