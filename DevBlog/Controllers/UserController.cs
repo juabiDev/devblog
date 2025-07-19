@@ -13,23 +13,24 @@ namespace DevBlog.Controllers;
 public class UserController : ControllerBase
 {
 	private readonly IUserService _userService;
+	private readonly IJwtService _jwtService;
 
-	public UserController(IUserService userService)
+	public UserController(IUserService userService, IJwtService jwtService)
 	{
 		_userService = userService;
+		_jwtService = jwtService;
 	}
 
 	[HttpPost]
-	public async Task<IActionResult> Create([FromBody] UserDTO user)
+	public async Task<IActionResult> Create([FromBody] CreateUserRequest user)
 	{
 		try
 		{
-			await _userService.AddUserAsync(user);
+			var userCreated = await _userService.AddUserAsync(user);
 
-			return Ok(new
-			{
-				message = "User created successfully"
-			});
+			var authenticationResponse = _jwtService.CreateJwtToken(userCreated);
+			
+			return Ok(authenticationResponse);
 		}
 		catch (ArgumentException ex)
 		{
