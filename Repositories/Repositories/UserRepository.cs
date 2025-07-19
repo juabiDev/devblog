@@ -25,7 +25,7 @@ public class UserRepository : IUserRepository
 		_resiliencePipeline = resiliencePipeline;
 	}
 
-	public async Task AddUserAsync(User user)
+	public async Task<User> AddUserAsync(User user)
 	{
 		if (user == null)
 		{
@@ -33,10 +33,12 @@ public class UserRepository : IUserRepository
 		}
 		try
 		{
-			await _resiliencePipeline.ExecuteAsync(async delegate(CancellationToken token)
+			return await _resiliencePipeline.ExecuteAsync(async delegate(CancellationToken token)
 			{
-				await _dbContext.User.AddAsync(user, token);
+				var userAdded = await _dbContext.User.AddAsync(user, token);
 				await _dbContext.SaveChangesAsync(token);
+
+				return userAdded.Entity;
 			}, default);
 		}
 		catch (DbUpdateException)
@@ -49,7 +51,6 @@ public class UserRepository : IUserRepository
 		}
 		catch (Exception value)
 		{
-			Console.WriteLine($"Error inesperado: {value}");
 			throw new Exception("Ocurrió un error inesperado al agregar el usuario.");
 		}
 	}
