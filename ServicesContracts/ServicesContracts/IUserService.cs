@@ -15,5 +15,7 @@ public interface IUserService
 
 	Task EditUserAsync(Guid userId, UserDTO user);
 
-	Task AddUserAsync(UserDTO user);
+	Task<UserDTO> AddUserAsync(CreateUserRequest user);
+
+	Task<UserDTO> Login(LoginRequest login);
 }
